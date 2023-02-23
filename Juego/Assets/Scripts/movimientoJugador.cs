@@ -11,10 +11,12 @@ public class movimientoJugador : MonoBehaviour
     public int velocidad;
     private Vector3 offset;
     private float valX, valZ;
+    private Rigidbody rb;
 
     // Start is called before the first frame update
     void Start()
     {
+        rb = gameObject.GetComponent<Rigidbody>();
         offset = camara.transform.position;
         valX = 0.0f;
         valZ = 0.0f;
@@ -31,6 +33,10 @@ public class movimientoJugador : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        float movHorizontal = Input.GetAxis("Horizontal");
+        float movVertical = Input.GetAxis("Vertical");
+
+        Vector3 movimiento = new Vector3(movHorizontal, 0.0f, movVertical);
+        rb.AddForce(movimiento * velocidad);
     }
 }
