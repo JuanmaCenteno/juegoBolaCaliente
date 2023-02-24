@@ -12,10 +12,13 @@ public class movimientoJugador : MonoBehaviour
     private Vector3 offset;
     private float valX, valZ;
 
+    public GameObject sombrero;
+
     // Start is called before the first frame update
     void Start()
     {
         offset = camara.transform.position;
+        offset = sombrero.transform.position;
         valX = 0.0f;
         valZ = 0.0f;
         SueloInicial();
@@ -31,6 +34,6 @@ public class movimientoJugador : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        sombrero.transform.position = this.transform.position + offset;
     }
 }
