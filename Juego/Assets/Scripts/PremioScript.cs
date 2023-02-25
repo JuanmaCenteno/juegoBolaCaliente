@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PremioScript : MonoBehaviour
 {
+    public ParticleSystem particulas;
+    public AudioSource sonido;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,7 +18,8 @@ public class PremioScript : MonoBehaviour
         this.transform.Rotate(Vector3.up, Time.deltaTime * 180);
     }
 
-    void OnTriggerEnter(Collider Other){
-        Debug.Log("Premio!");
+    void OnDestroy(){
+        Instantiate<ParticleSystem>(particulas, this.transform.position, particulas.transform.rotation);
+        sonido.Play();
     }
 }
