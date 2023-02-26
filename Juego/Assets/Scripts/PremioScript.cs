@@ -20,6 +20,7 @@ public class PremioScript : MonoBehaviour
 
     void OnDestroy(){
         Instantiate<ParticleSystem>(particulas, this.transform.position, particulas.transform.rotation);
-        sonido.Play();
+        AudioSource mysound = Instantiate<AudioSource>(sonido, this.transform.position, sonido.transform.rotation);
+        mysound.Play();
     }
 }
