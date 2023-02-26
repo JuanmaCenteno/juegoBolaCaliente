@@ -11,7 +11,7 @@ public class movimientoJugador : MonoBehaviour
     public Camera camara;
     public GameObject Vacio;
     public int velocidad;
-    public int jumpspeed;
+    public float jumpspeed;
     private Vector3 offset_camara;
     private Vector3 offset_sombrero;
     private float valX, valZ;
@@ -26,8 +26,11 @@ public class movimientoJugador : MonoBehaviour
     private int nSuelos;
     private GameObject[] suelos;
     private int indiceSuelos;
+    private float orientacion;
 
     public GameObject sombrero;
+
+    public AudioSource musica;
 
 
     // Start is called before the first frame update
@@ -37,14 +40,16 @@ public class movimientoJugador : MonoBehaviour
         offset_camara = camara.transform.position;
         offset_sombrero = sombrero.transform.position;
         valZ = 0.0f;
-        valX = -12.0f;
+        valX = -6.0f;
         aleatorio = new Random();
         tiempo = 0;
         ventanaTiempo = 6/velocidad;
         tSiguienteSuelo = ventanaTiempo;
-        nSuelos = 5;
+        nSuelos = 4;
         suelos = new GameObject[nSuelos];
         indiceSuelos = 0;
+        orientacion = 90.0f;
+        musica.Play();
         SueloInicial();
     }
 
@@ -56,9 +61,15 @@ public class movimientoJugador : MonoBehaviour
     }
 
     void crearSuelo(){
-        suelos[indiceSuelos] = Instantiate(prefabsSuelos[aleatorio.Next(prefabsSuelos.Length-1)], new Vector3(valX, 0.0f, valZ), Quaternion.identity) as GameObject;
+        int numAleatorio = aleatorio.Next(prefabsSuelos.Length);
+        if(numAleatorio == 0){
+            if(orientacion == 90.0f) orientacion = 0.0f;
+            else orientacion = 90.0f; 
+        }
+        suelos[indiceSuelos] = Instantiate(prefabsSuelos[numAleatorio], new Vector3(valX, 0.0f, valZ), Quaternion.Euler(0f, orientacion+90.0f, 0f)) as GameObject;
         indiceSuelos = (indiceSuelos+1)%nSuelos;
-        valX += 6.0f;
+        if(orientacion == 0.0f) valZ += 6.0f;
+        else valX += 6.0f;
     }
 
     // Update is called once per frame
@@ -70,12 +81,12 @@ public class movimientoJugador : MonoBehaviour
         float Vmove = Input.GetAxis("Vertical");
         camara.transform.position = this.transform.position + offset_camara;
         Vacio.transform.position = new Vector3(this.transform.position.x, -3.0f, this.transform.position.z);
-        sombrero.transform.position = this.transform.position + offset_sombrero;
+        //sombrero.transform.position = this.transform.position + offset_sombrero;
 
 
 
         Vector3 ballmove = new Vector3 (Hmove, 0.0f, Vmove);
-        rb.AddForce(ballmove * velocidad);
+        rb.AddForce(ballmove * velocidad/2);
 
         //SALTO
         if(isGrounded && Input.GetKey(KeyCode.Space)){
@@ -103,6 +114,7 @@ public class movimientoJugador : MonoBehaviour
             isGrounded = true;
         }
         if(other.gameObject.tag == "Vacio" || other.gameObject.tag == "Muerte"){
+            Debug.Log("A tomar por culo");
             // DECIR QUE SE HA PERDIDO, MOMENTO GUITARTE
         }
     }
