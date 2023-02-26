@@ -11,20 +11,13 @@ public class movimientoJugador : MonoBehaviour
     public Camera camara;
     public GameObject Vacio;
     public int velocidad;
-<<<<<<< HEAD
-    public int jumpspeed;
-    private Vector3 offset;
-=======
     public float jumpspeed;
     private Vector3 offset_camara;
     private Vector3 offset_sombrero;
->>>>>>> origin/AleDiaz
     private float valX, valZ;
 
     private bool isGrounded = true;
 
-<<<<<<< HEAD
-=======
     private Random aleatorio;
     private float tiempo;
     private float ventanaTiempo;
@@ -40,18 +33,12 @@ public class movimientoJugador : MonoBehaviour
     public AudioSource musica;
 
 
->>>>>>> origin/AleDiaz
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-<<<<<<< HEAD
-        offset = camara.transform.position;
-        valX = 0.0f;
-=======
         offset_camara = camara.transform.position;
         offset_sombrero = sombrero.transform.position;
->>>>>>> origin/AleDiaz
         valZ = 0.0f;
         valX = -6.0f;
         aleatorio = new Random();
@@ -67,15 +54,9 @@ public class movimientoJugador : MonoBehaviour
     }
 
     void SueloInicial(){
-<<<<<<< HEAD
-        for(int i = 0; i < 30; i++){
-            valZ += 6.0f;
-            GameObject nuevoSuelo = Instantiate(prefabSuelo, new Vector3(valX, 0.0f, valZ), Quaternion.identity) as GameObject;
-=======
         for(int i = 0; i<nSuelos; i++){
             suelos[i] = Instantiate(prefabsSuelos[0], new Vector3(valX, 0.0f, valZ), Quaternion.identity) as GameObject;
             valX += 6.0f;
->>>>>>> origin/AleDiaz
         }
     }
 
@@ -94,18 +75,6 @@ public class movimientoJugador : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-<<<<<<< HEAD
-        this.transform.position += new Vector3(0.0f, 0.0f,0.025f);
-        
-        float Hmove = Input.GetAxis("Horizontal");
-        float Vmove = Input.GetAxis("Vertical");
-
-        camara.transform.position = this.transform.position + offset;
-
-        Vector3 ballmove = new Vector3 (Hmove, 0.0f, Vmove);
-        rb.AddForce(ballmove * velocidad);
-
-=======
         //this.transform.position += new Vector3(0.0f, 0.0f,0.025f);
         
         float Hmove = Input.GetAxis("Horizontal");
@@ -120,13 +89,10 @@ public class movimientoJugador : MonoBehaviour
         rb.AddForce(ballmove * velocidad/2);
 
         //SALTO
->>>>>>> origin/AleDiaz
         if(isGrounded && Input.GetKey(KeyCode.Space)){
             Vector3 balljump = new Vector3(0.0f, 6.0f, 0.0f);
             rb.AddForce(balljump * jumpspeed);
         }
-<<<<<<< HEAD
-=======
 
         //GENERACION DE SUELOS POR TIEMPO
         tiempo += Time.deltaTime;
@@ -140,7 +106,6 @@ public class movimientoJugador : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.R)){
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);     //Reiniciar si se pulsa la R, annadir reiniciar tiempo y puntuacion
         }
->>>>>>> origin/AleDiaz
         
     }
 
@@ -148,13 +113,10 @@ public class movimientoJugador : MonoBehaviour
         if(other.gameObject.tag ==  "Suelo"){
             isGrounded = true;
         }
-<<<<<<< HEAD
-=======
         if(other.gameObject.tag == "Vacio" || other.gameObject.tag == "Muerte"){
             Debug.Log("A tomar por culo");
             // DECIR QUE SE HA PERDIDO, MOMENTO GUITARTE
         }
->>>>>>> origin/AleDiaz
     }
 
     private void OnCollisionExit(Collision other) {
@@ -162,8 +124,4 @@ public class movimientoJugador : MonoBehaviour
             isGrounded = false;
         }
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> origin/AleDiaz
