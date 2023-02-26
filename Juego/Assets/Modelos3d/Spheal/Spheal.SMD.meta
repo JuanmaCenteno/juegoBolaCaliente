@@ -1,5 +1,10 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Juego/Assets/Modelos3d/Spheal/Spheal.SMD.meta
 guid: 700ff272f477e0844814b8aa3f24ed0b
+========
+guid: 9c9f1f5032ef63312bd6ae233a5bc200
+folderAsset: yes
+>>>>>>>> Guitarte:Juego/Assets/Modelos.meta
 DefaultImporter:
   externalObjects: {}
   userData: 

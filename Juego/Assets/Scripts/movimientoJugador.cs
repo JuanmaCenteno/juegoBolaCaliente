@@ -15,6 +15,7 @@ public class movimientoJugador : MonoBehaviour
     private Vector3 offset_camara;
     private Vector3 offset_sombrero;
     private float valX, valZ;
+    private int cont;
 
     private bool isGrounded = true;
 
@@ -29,6 +30,8 @@ public class movimientoJugador : MonoBehaviour
     private float orientacion;
 
     public GameObject sombrero;
+
+    public Text texto;
 
     public AudioSource musica;
 
@@ -106,7 +109,15 @@ public class movimientoJugador : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.R)){
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);     //Reiniciar si se pulsa la R, annadir reiniciar tiempo y puntuacion
         }
-        
+    }
+
+    void OnTriggerEnter(Collider Other){
+        if(Other.CompareTag("Premio")){
+            Debug.Log("Premio!");
+            cont++;
+            texto.text = "Puntuacion: " + cont;
+            Destroy(Other.gameObject);
+        }
     }
 
     private void OnCollisionEnter(Collision other) {
