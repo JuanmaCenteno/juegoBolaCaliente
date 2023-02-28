@@ -16,7 +16,8 @@ public class movimientoJugador : MonoBehaviour
     private Vector3 offset_sombrero;
     private float valX, valZ;
 
-    private bool isGrounded = true;
+    private bool isGrounded;
+    private int n_grounded;
 
     private Random aleatorio;
     private float tiempo;
@@ -27,10 +28,16 @@ public class movimientoJugador : MonoBehaviour
     private GameObject[] suelos;
     private int indiceSuelos;
     private float orientacion;
+    private int nMon;
+    private int ul_mon;
+
 
     public GameObject sombrero;
+    public Text texto;
 
     public AudioSource musica;
+    public AudioSource pickup;
+    public AudioSource salto;
 
 
     // Start is called before the first frame update
@@ -49,6 +56,10 @@ public class movimientoJugador : MonoBehaviour
         suelos = new GameObject[nSuelos];
         indiceSuelos = 0;
         orientacion = 90.0f;
+        nMon = 0;
+        ul_mon = 0;
+        isGrounded = false;
+        n_grounded = 0;
         musica.Play();
         SueloInicial();
     }
@@ -62,10 +73,19 @@ public class movimientoJugador : MonoBehaviour
 
     void crearSuelo(){
         int numAleatorio = aleatorio.Next(prefabsSuelos.Length);
-        if(numAleatorio == 0){
+        if(numAleatorio == prefabsSuelos.Length - 1 || numAleatorio == 0 || ul_mon >=5){
             if(orientacion == 90.0f) orientacion = 0.0f;
-            else orientacion = 90.0f; 
+            else orientacion = 90.0f;
+            if(ul_mon >=5){
+                numAleatorio = numAleatorio%2;
+                if(numAleatorio != 0){
+                    numAleatorio = 15;
+                }
+            }
+            ul_mon = 0;
         }
+        else{ul_mon++;}
+
         suelos[indiceSuelos] = Instantiate(prefabsSuelos[numAleatorio], new Vector3(valX, 0.0f, valZ), Quaternion.Euler(0f, orientacion+90.0f, 0f)) as GameObject;
         indiceSuelos = (indiceSuelos+1)%nSuelos;
         if(orientacion == 0.0f) valZ += 6.0f;
@@ -86,10 +106,11 @@ public class movimientoJugador : MonoBehaviour
 
 
         Vector3 ballmove = new Vector3 (Hmove, 0.0f, Vmove);
-        rb.AddForce(ballmove * velocidad/2);
+        rb.AddForce(ballmove * velocidad);
 
         //SALTO
         if(isGrounded && Input.GetKey(KeyCode.Space)){
+            salto.Play();
             Vector3 balljump = new Vector3(0.0f, 6.0f, 0.0f);
             rb.AddForce(balljump * jumpspeed);
         }
@@ -98,30 +119,45 @@ public class movimientoJugador : MonoBehaviour
         tiempo += Time.deltaTime;
         if(tiempo > tSiguienteSuelo){
             tSiguienteSuelo += ventanaTiempo;
-            suelos[indiceSuelos].SetActive(false);
+            Destroy(suelos[indiceSuelos]);
             crearSuelo();
         }
+    }
 
-        //RESTART
-        if(Input.GetKeyDown(KeyCode.R)){
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);     //Reiniciar si se pulsa la R, annadir reiniciar tiempo y puntuacion
+    private void OnTriggerEnter(Collider other) {
+        if(other.gameObject.tag == "Premio"){
+            nMon++;
+            Destroy(other.gameObject);
+
+            AudioSource sonido = Instantiate<AudioSource>(pickup, this.transform.position, pickup.transform.rotation);
+            sonido.Play();
+
+            texto.text = "Monedas: " +  nMon +" / 3";
+
+            if(nMon == 3){
+                SceneManager.LoadScene("Win", LoadSceneMode.Single);
+            }
         }
-        
     }
 
     private void OnCollisionEnter(Collision other) {
-        if(other.gameObject.tag ==  "Suelo"){
+        if(other.gameObject.tag == "Suelo"){
             isGrounded = true;
+            n_grounded++;
         }
-        if(other.gameObject.tag == "Vacio" || other.gameObject.tag == "Muerte"){
-            Debug.Log("A tomar por culo");
-            // DECIR QUE SE HA PERDIDO, MOMENTO GUITARTE
+        if(other.gameObject.tag == "Vacio"){
+            SceneManager.LoadScene("Derrota_agua", LoadSceneMode.Single);
+        }
+
+        if(other.gameObject.tag == "Muerte"){
+            SceneManager.LoadScene("Derrota_pincho", LoadSceneMode.Single);
         }
     }
 
     private void OnCollisionExit(Collision other) {
-        if(other.gameObject.tag ==  "Suelo"){
-            isGrounded = false;
+        if(other.gameObject.tag == "Suelo"){
+            n_grounded--;
+            if(n_grounded == 0) isGrounded = false;
         }
     }
 }

@@ -30,7 +30,7 @@ public class Pulsar : MonoBehaviour
             switch(numero){
                 case 0: 
                     Debug.Log("Terminado - Salto a otra escena.");
-                    SceneManager.LoadScene("final");
+                    SceneManager.LoadScene("Juego", LoadSceneMode.Single);
                     break;
 
                 case 1:
